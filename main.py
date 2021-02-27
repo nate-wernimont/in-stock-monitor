@@ -11,14 +11,19 @@ from stores.staples import Staples
 
 # The amount of time to sleep between requests
 REQUEST_DELAY = 5
+ITEM_LIST_CONFIG_NAME = "items"
+DELAY_CONFIG_NAME = "delay"
+NOTIFIER_CONFIG_CATEGORY = "notifier"
+SNS_TOPIC_NAME = "sns_topic_arn"
+CONFIG_FILE = "config.ini"
 
 
 async def main():
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    config.read(CONFIG_FILE)
     tasks = []
 
-    sns_topic = config['notifier']['sns_topic_arn']
+    sns_topic = config[NOTIFIER_CONFIG_CATEGORY][SNS_TOPIC_NAME]
 
     storesToInitializers = {
         'bestbuy': BestBuy,
@@ -32,15 +37,15 @@ async def main():
         if storeConfig is None:
             continue
 
-        skus = set(storeConfig['skus'].split(","))
-        delay = storeConfig['delay']
+        items = set(storeConfig[ITEM_LIST_CONFIG_NAME].split(","))
+        delay = storeConfig[DELAY_CONFIG_NAME]
         if delay is None:
             delay = REQUEST_DELAY
 
         tasks.append(asyncio.create_task(
             Monitor(
                 store=storeInit(),
-                skus=skus,
+                items=items,
                 sns_topic=sns_topic
             ).run(delay=int(delay))))
 

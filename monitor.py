@@ -1,24 +1,23 @@
-from urllib3.exceptions import ProtocolError
+import gi.repository
 import boto3
-from gi.repository import Notify
 import asyncio
-from stores.interface.interface import StoreInterface
+from stores.interface.interface import AbstractStore
 import requests
-import gi
-gi.require_version('Notify', '0.7')
 
 
 class Monitor:
 
-    def __init__(self, store: StoreInterface, skus, sns_topic: str):
+    def __init__(self, store: AbstractStore, items, sns_topic: str):
         self.store = store
-        self.skus = skus
+        self.items = items
         self.sns_topic = sns_topic
         self.texted_links = {}
 
     async def run(self, delay: int):
+        skus = map(lambda item: self.store.item_to_sku(item), self.items)
+
         skus_to_urls = dict((sku, self.store.sku_to_url(sku))
-                            for sku in self.skus)
+                            for sku in skus)
 
         while True:
             for sku, url in skus_to_urls.items():
@@ -35,7 +34,7 @@ class Monitor:
                     continue
 
                 in_stock = self.store.is_in_stock(
-                    response.content.decode("utf-8"))
+                    sku, response.content.decode("utf-8"))
                 if in_stock:
                     print(response.content)
                     self.notify(url)
@@ -44,9 +43,9 @@ class Monitor:
 
     def notify(self, url):
         print(url)
-        Notify.init("In Stock Notifier")
-        notification = Notify.Notification.new("In Stock", url)
-        notification.set_urgency(Notify.Urgency.CRITICAL)
+        repository.Notify.init("In Stock Notifier")
+        notification = repository.Notify.Notification.new("In Stock", url)
+        notification.set_urgency(repository.Notify.Urgency.CRITICAL)
         notification.show()
 
         if self.sns_topic is None or url in self.texted_links:
