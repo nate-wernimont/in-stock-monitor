@@ -2,6 +2,7 @@ from html.parser import HTMLParser
 import requests
 from stores.interface.interface import StoreInterface
 
+
 class BestBuyParser(HTMLParser):
     inAddToCart = False
     addToCartText = ""
@@ -24,10 +25,12 @@ class BestBuyParser(HTMLParser):
         super().feed(data)
         return self.addToCartText
 
+
 bestBuyHeaders = headers = {
     'authority': 'www.bestbuy.com',
     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
 }
+
 
 class BestBuy(StoreInterface):
 
@@ -40,4 +43,3 @@ class BestBuy(StoreInterface):
     def is_in_stock(self, data: str) -> bool:
         addToCartText = BestBuyParser().feed(data)
         return addToCartText != "Sold Out"
-    

@@ -2,6 +2,7 @@ import requests
 from html.parser import HTMLParser
 from stores.interface.interface import StoreInterface
 
+
 class NeweggParser(HTMLParser):
     out_of_stock = False
 
@@ -18,6 +19,7 @@ class NeweggParser(HTMLParser):
     def feed(self, data):
         super().feed(data)
         return not self.out_of_stock
+
 
 class Newegg(StoreInterface):
 

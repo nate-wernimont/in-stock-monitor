@@ -1,10 +1,12 @@
+from urllib3.exceptions import ProtocolError
+import boto3
+from gi.repository import Notify
 import asyncio
 from stores.interface.interface import StoreInterface
 import requests
 import gi
 gi.require_version('Notify', '0.7')
-from gi.repository import Notify
-import boto3
+
 
 class Monitor:
 
@@ -13,26 +15,33 @@ class Monitor:
         self.skus = skus
         self.sns_topic = sns_topic
         self.texted_links = {}
-    
+
     async def run(self, delay: int):
-        skus_to_urls = dict((sku, self.store.sku_to_url(sku)) for sku in self.skus)
+        skus_to_urls = dict((sku, self.store.sku_to_url(sku))
+                            for sku in self.skus)
 
         while True:
             for sku, url in skus_to_urls.items():
                 await asyncio.sleep(delay)
 
-                response = requests.get(url, headers=self.store.custom_headers)
+                try:
+                    response = requests.get(
+                        url, headers=self.store.custom_headers)
+                except:
+                    print("Encountered error for: {}".format(sku))
+                    continue
                 if response.status_code != 200:
                     print("unable to request data for url: {}".format(url))
                     continue
 
-                in_stock = self.store.is_in_stock(response.content.decode("utf-8"))
+                in_stock = self.store.is_in_stock(
+                    response.content.decode("utf-8"))
                 if in_stock:
                     print(response.content)
                     self.notify(url)
                 else:
                     print("Out of stock: {}".format(sku))
-    
+
     def notify(self, url):
         print(url)
         Notify.init("In Stock Notifier")

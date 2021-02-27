@@ -1,6 +1,7 @@
 class QueryException(Exception):
     pass
 
+
 class StoreInterface:
     custom_headers = {}
 
@@ -11,5 +12,3 @@ class StoreInterface:
     def is_in_stock(self, data: str) -> bool:
         """Returns whether the data found at a url indicates whether it is in stock."""
         pass
-    
-
