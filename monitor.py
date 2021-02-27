@@ -38,7 +38,7 @@ class Monitor:
         notification.set_urgency(Notify.Urgency.CRITICAL)
         notification.show()
 
-        if self.sns_topic is None or self.texted_links[url] is not None:
+        if self.sns_topic is None or url in self.texted_links:
             return
 
         client = boto3.client('sns')
