@@ -4,6 +4,7 @@ import requests
 import gi
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify
+import boto3
 
 class Monitor:
 
@@ -27,6 +28,7 @@ class Monitor:
 
                 in_stock = self.store.is_in_stock(response.content.decode("utf-8"))
                 if in_stock:
+                    print(response.content)
                     self.notify(url)
                 else:
                     print("Out of stock: {}".format(sku))
