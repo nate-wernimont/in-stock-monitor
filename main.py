@@ -5,6 +5,7 @@ import asyncio
 from stores.bestbuy import BestBuy
 from stores.staples import Staples
 from stores.newegg import Newegg
+from stores.evga import EVGA
 from monitor import Monitor
 
 # The amount of time to sleep between requests
@@ -21,6 +22,7 @@ async def main():
         'bestbuy': BestBuy,
         'staples': Staples,
         'newegg': Newegg,
+        'evga': EVGA,
     }
 
     for storeName, storeInit in storesToInitializers.items():

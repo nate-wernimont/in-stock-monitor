@@ -2,7 +2,12 @@ import requests
 from html.parser import HTMLParser
 from stores.interface.interface import StoreInterface
 
-class NeweggParser(HTMLParser):
+evgaHeaders = headers = {
+    'authority': 'www.evga.com',
+    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
+}
+
+class EVGAParser(HTMLParser):
     out_of_stock = False
 
     def handle_starttag(self, tag, attrs):
@@ -19,10 +24,13 @@ class NeweggParser(HTMLParser):
         super().feed(data)
         return not self.out_of_stock
 
-class Newegg(StoreInterface):
+class EVGA(StoreInterface):
+
+    def __init__(self):
+        self.custom_headers=evgaHeaders
 
     def sku_to_url(self, sku: str) -> str:
-        return "https://www.newegg.com/p/pl?d={}".format(sku)
+        return "https://www.evga.com/products/product.aspx?pn={}".format(sku)
 
     def is_in_stock(self, data: str) -> bool:
-        return NeweggParser().feed(data)
+        return EVGAParser().feed(data)

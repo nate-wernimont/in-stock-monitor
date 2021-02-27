@@ -1,5 +1,4 @@
 from html.parser import HTMLParser
-import asyncio
 import requests
 from stores.interface.interface import StoreInterface
 
