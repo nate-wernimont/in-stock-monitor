@@ -1,6 +1,5 @@
 import gi.repository
 import boto3
-from urllib3.exceptions import ProtocolError
 import asyncio
 from stores.interface.interface import AbstractStore
 import requests
