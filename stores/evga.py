@@ -1,6 +1,6 @@
 import requests
 from html.parser import HTMLParser
-from stores.interface.interface import StoreInterface
+from stores.interface.interface import AbstractStore
 
 evgaHeaders = headers = {
     'authority': 'www.evga.com',
@@ -26,13 +26,17 @@ class EVGAParser(HTMLParser):
         return not self.out_of_stock
 
 
-class EVGA(StoreInterface):
+class EVGA(AbstractStore):
 
     def __init__(self):
         self.custom_headers = evgaHeaders
 
+    def item_to_sku(self, items):
+        # EVGA items are SKUs themselves
+        return items
+
     def sku_to_url(self, sku: str) -> str:
         return "https://www.evga.com/products/product.aspx?pn={}".format(sku)
 
-    def is_in_stock(self, data: str) -> bool:
+    def is_in_stock(self, sku, data: str) -> bool:
         return EVGAParser().feed(data)

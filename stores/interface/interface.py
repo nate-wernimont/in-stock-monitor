@@ -2,13 +2,17 @@ class QueryException(Exception):
     pass
 
 
-class StoreInterface:
+class AbstractStore:
     custom_headers = {}
+
+    def item_to_sku(self, items):
+        """Converts ini formatted item to sku."""
+        pass
 
     def sku_to_url(self, sku: str) -> str:
         """Convert a sku to a url to be loaded."""
         pass
 
-    def is_in_stock(self, data: str) -> bool:
-        """Returns whether the data found at a url indicates whether it is in stock."""
+    def is_in_stock(self, sku: str, data: str) -> bool:
+        """Returns whether the webpage found for the sku indicates whether it is in stock."""
         pass

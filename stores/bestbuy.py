@@ -1,6 +1,6 @@
 from html.parser import HTMLParser
 import requests
-from stores.interface.interface import StoreInterface
+from stores.interface.interface import AbstractStore
 
 
 class BestBuyParser(HTMLParser):
@@ -32,14 +32,18 @@ bestBuyHeaders = headers = {
 }
 
 
-class BestBuy(StoreInterface):
+class BestBuy(AbstractStore):
 
     def __init__(self):
         self.custom_headers = bestBuyHeaders
 
+    def item_to_sku(self, items):
+        # BestBuy items are skus themselves
+        return items
+
     def sku_to_url(self, sku: str) -> str:
         return 'https://www.bestbuy.com/site/searchpage.jsp?st={}'.format(sku)
 
-    def is_in_stock(self, data: str) -> bool:
+    def is_in_stock(self, sku, data: str) -> bool:
         addToCartText = BestBuyParser().feed(data)
         return addToCartText != "Sold Out"

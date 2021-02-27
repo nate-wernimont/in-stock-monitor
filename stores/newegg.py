@@ -1,6 +1,6 @@
 import requests
 from html.parser import HTMLParser
-from stores.interface.interface import StoreInterface
+from stores.interface.interface import AbstractStore
 
 
 class NeweggParser(HTMLParser):
@@ -21,10 +21,14 @@ class NeweggParser(HTMLParser):
         return not self.out_of_stock
 
 
-class Newegg(StoreInterface):
+class Newegg(AbstractStore):
+
+    def item_to_sku(self, items):
+        # Newegg items are SKUs themselves
+        return items
 
     def sku_to_url(self, sku: str) -> str:
         return "https://www.newegg.com/p/pl?d={}".format(sku)
 
-    def is_in_stock(self, data: str) -> bool:
+    def is_in_stock(self, sku, data: str) -> bool:
         return NeweggParser().feed(data)

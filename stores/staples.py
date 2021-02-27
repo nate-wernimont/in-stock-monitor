@@ -1,7 +1,7 @@
 import requests
 import json
 from html.parser import HTMLParser
-from stores.interface.interface import StoreInterface
+from stores.interface.interface import AbstractStore
 from stores.interface.interface import QueryException
 
 
@@ -23,7 +23,11 @@ class StaplesParser(HTMLParser):
         return self.inStock
 
 
-class Staples(StoreInterface):
+class Staples(AbstractStore):
+
+    def item_to_sku(self, items):
+        # Staples items are SKUs themselves
+        return items
 
     def sku_to_url(self, sku: str) -> str:
         response = requests.get(
@@ -35,5 +39,5 @@ class Staples(StoreInterface):
 
         return "https://staples.com{}".format(json.loads(response.content.decode("utf-8"))["path"])
 
-    def is_in_stock(self, data: str) -> bool:
+    def is_in_stock(self, sku, data: str) -> bool:
         return StaplesParser().feed(data)
