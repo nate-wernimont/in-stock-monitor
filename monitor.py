@@ -1,6 +1,9 @@
 import asyncio
 from stores.interface.interface import StoreInterface
 import requests
+import gi
+gi.require_version('Notify', '0.7')
+from gi.repository import Notify
 
 class Monitor:
 
@@ -29,6 +32,7 @@ class Monitor:
                     print("Out of stock: {}".format(sku))
     
     def notify(self, url):
+        print(url)
         Notify.init("In Stock Notifier")
         notification = Notify.Notification.new("In Stock", url)
         notification.set_urgency(Notify.Urgency.CRITICAL)
