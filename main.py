@@ -4,6 +4,7 @@ import time
 import asyncio
 from stores.bestbuy import BestBuy
 from stores.staples import Staples
+from stores.newegg import Newegg
 from monitor import Monitor
 
 # The amount of time to sleep between requests
@@ -19,6 +20,7 @@ async def main():
     storesToInitializers = {
         'bestbuy': BestBuy,
         'staples': Staples,
+        'newegg': Newegg,
     }
 
     for storeName, storeInit in storesToInitializers.items():

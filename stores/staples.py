@@ -1,6 +1,5 @@
 import requests
 import json
-import sys
 from html.parser import HTMLParser
 from stores.interface.interface import StoreInterface
 
