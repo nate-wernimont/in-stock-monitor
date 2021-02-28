@@ -6,7 +6,7 @@ from stores.interface.interface import QueryException
 
 
 class StaplesParser(HTMLParser):
-    inStock = True
+    inStock = False
 
     def handle_starttag(self, tag, attrs):
         return
@@ -15,8 +15,8 @@ class StaplesParser(HTMLParser):
         return
 
     def handle_data(self, data):
-        if data == "This item is out of stock":
-            self.inStock = False
+        if data == "Quantity":
+            self.inStock = True
 
     def feed(self, data):
         super().feed(data)
