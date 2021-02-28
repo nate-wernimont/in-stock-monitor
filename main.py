@@ -8,6 +8,8 @@ from stores.bestbuy import BestBuy
 from stores.evga import EVGA
 from stores.newegg import Newegg
 from stores.staples import Staples
+from notifiers.sms import SMSNotifier
+from notifiers.system import SystemNotifier
 
 # The amount of time to sleep between requests
 REQUEST_DELAY = 5
@@ -23,7 +25,11 @@ async def main():
     config.read(CONFIG_FILE)
     tasks = []
 
+    notifiers = [SystemNotifier()]
+
     sns_topic = config[NOTIFIER_CONFIG_CATEGORY][SNS_TOPIC_NAME]
+    if sns_topic is not None:
+        notifiers.append(SMSNotifier(sns_topic=sns_topic))
 
     storesToInitializers = {
         'bestbuy': BestBuy,
@@ -46,7 +52,7 @@ async def main():
             Monitor(
                 store=storeInit(),
                 items=items,
-                sns_topic=sns_topic
+                notifiers=notifiers
             ).run(delay=int(delay))))
 
     await asyncio.gather(*tasks)
