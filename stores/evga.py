@@ -31,9 +31,9 @@ class EVGA(AbstractStore):
     def __init__(self):
         self.custom_headers = evgaHeaders
 
-    def item_to_sku(self, items):
+    def item_to_sku(self, item):
         # EVGA items are SKUs themselves
-        return items
+        return item
 
     def sku_to_url(self, sku: str) -> str:
         return "https://www.evga.com/products/product.aspx?pn={}".format(sku)

@@ -23,9 +23,9 @@ class NeweggParser(HTMLParser):
 
 class Newegg(AbstractStore):
 
-    def item_to_sku(self, items):
+    def item_to_sku(self, item):
         # Newegg items are SKUs themselves
-        return items
+        return item
 
     def sku_to_url(self, sku: str) -> str:
         return "https://www.newegg.com/p/pl?d={}".format(sku)

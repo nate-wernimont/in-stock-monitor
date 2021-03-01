@@ -25,9 +25,9 @@ class StaplesParser(HTMLParser):
 
 class Staples(AbstractStore):
 
-    def item_to_sku(self, items):
+    def item_to_sku(self, item):
         # Staples items are SKUs themselves
-        return items
+        return item
 
     def sku_to_url(self, sku: str) -> str:
         response = requests.get(

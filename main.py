@@ -8,6 +8,7 @@ from stores.bestbuy import BestBuy
 from stores.evga import EVGA
 from stores.newegg import Newegg
 from stores.staples import Staples
+from stores.amazon import Amazon
 from notifiers.sms import SMSNotifier
 from notifiers.system import SystemNotifier
 
@@ -36,17 +37,18 @@ async def main():
         'staples': Staples,
         'newegg': Newegg,
         'evga': EVGA,
+        'amazon': Amazon,
     }
 
     for storeName, storeInit in storesToInitializers.items():
-        storeConfig = config[storeName]
-        if storeConfig is None:
+        if storeName not in config:
             continue
+        storeConfig = config[storeName]
 
         items = set(storeConfig[ITEM_LIST_CONFIG_NAME].split(","))
-        delay = storeConfig[DELAY_CONFIG_NAME]
-        if delay is None:
-            delay = REQUEST_DELAY
+        delay = REQUEST_DELAY
+        if DELAY_CONFIG_NAME in storeConfig:
+            delay = storeConfig[DELAY_CONFIG_NAME]
 
         tasks.append(asyncio.create_task(
             Monitor(

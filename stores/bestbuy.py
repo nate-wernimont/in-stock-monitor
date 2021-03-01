@@ -37,9 +37,9 @@ class BestBuy(AbstractStore):
     def __init__(self):
         self.custom_headers = bestBuyHeaders
 
-    def item_to_sku(self, items):
+    def item_to_sku(self, item):
         # BestBuy items are skus themselves
-        return items
+        return item
 
     def sku_to_url(self, sku: str) -> str:
         return 'https://www.bestbuy.com/site/searchpage.jsp?st={}'.format(sku)
