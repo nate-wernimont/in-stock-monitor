@@ -1,7 +1,5 @@
 import asyncio
-import configparser
-import sys
-import time
+from configobj import ConfigObj
 
 from monitor import Monitor
 from stores.bestbuy import BestBuy
@@ -19,11 +17,11 @@ DELAY_CONFIG_NAME = "delay"
 NOTIFIER_CONFIG_CATEGORY = "notifier"
 SNS_TOPIC_NAME = "sns_topic_arn"
 CONFIG_FILE = "config.ini"
+EXTRA_CONFIG_NAME = "extra"
 
 
 async def main():
-    config = configparser.ConfigParser()
-    config.read(CONFIG_FILE)
+    config = ConfigObj(CONFIG_FILE, list_values=False)
     tasks = []
 
     notifiers = [SystemNotifier()]
@@ -48,11 +46,15 @@ async def main():
         items = set(storeConfig[ITEM_LIST_CONFIG_NAME].split(","))
         delay = REQUEST_DELAY
         if DELAY_CONFIG_NAME in storeConfig:
-            delay = storeConfig[DELAY_CONFIG_NAME]
+            delay = int(storeConfig[DELAY_CONFIG_NAME])
+
+        extraConfig = {}
+        if EXTRA_CONFIG_NAME in storeConfig:
+            extraConfig = storeConfig[EXTRA_CONFIG_NAME]
 
         tasks.append(asyncio.create_task(
             Monitor(
-                store=storeInit(),
+                store=storeInit(config=extraConfig),
                 items=items,
                 notifiers=notifiers
             ).run(delay=int(delay))))

@@ -44,7 +44,7 @@ class ItemCondition(Enum):
 
 class ItemPreference:
 
-    def __init__(self, max_price: int, condition: ItemCondition):
+    def __init__(self, max_price=None, condition=None):
         self.max_price = max_price
         self.condition = condition
 
@@ -65,13 +65,20 @@ def ini_to_item(ini_str: str):
             return parts[0], ItemPreference(max_price=float(parts[1]))
         return parts[0], ItemPreference(condition=ItemCondition(parts[1]))
 
-    return parts[0], ItemPreference(max_price=float(parts[1]), condition=ItemCondition(parts[2]))
+    return parts[0], ItemPreference(max_price=float(parts[1]),
+                                    condition=ItemCondition(parts[2]))
+
+
+EMAIL = "email"
+PASSWORD = "password"
+CHROMEDRIVER = "chromedriver"
 
 
 class Amazon(AbstractStore):
     sku_to_max_price = {}
 
-    def __init__(self):
+    def __init__(self, config):
+        super().__init__(config=config)
         self.custom_headers = amazonHeaders
         self.item_preferences = {}
 
@@ -90,3 +97,20 @@ class Amazon(AbstractStore):
 
         # Assume all are new for now
         return in_stock and item_preference.matches(price, ItemCondition.NEW)
+
+    def buy_item(self, sku):
+        if EMAIL not in self.config:
+            return
+
+        chrome = webdriver.Chrome(self.config[CHROMEDRIVER])
+        chrome.get(self.sku_to_url(sku))
+        add_to_cart = chrome.find_element_by_id("buy-now-button")
+        add_to_cart.click()
+
+        chrome.find_element_by_id("ap_email").send_keys(self.config(EMAIL))
+        chrome.find_element_by_id("continue").click()
+        chrome.find_element_by_id(
+            "ap_password").send_keys(self.config[PASSWORD])
+        chrome.find_element_by_id("signInSubmit").click()
+        chrome.find_element_by_name("placeYourOrder1").click()
+        exit(1)

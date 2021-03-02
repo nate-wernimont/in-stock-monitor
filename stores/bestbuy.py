@@ -34,7 +34,8 @@ bestBuyHeaders = headers = {
 
 class BestBuy(AbstractStore):
 
-    def __init__(self):
+    def __init__(self, config):
+        super().__init__(config=config)
         self.custom_headers = bestBuyHeaders
 
     def item_to_sku(self, item):

@@ -1,2 +1,6 @@
 boto3 < 2.0
 selenium < 4.0
+requests < 3.0
+pgi < 1.0
+configobj < 6.0
+desktop_notify < 2.0
