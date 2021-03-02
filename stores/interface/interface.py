@@ -5,6 +5,9 @@ class QueryException(Exception):
 class AbstractStore:
     custom_headers = {}
 
+    def __init__(self, config):
+        self.config = config
+
     def item_to_sku(self, items):
         """Converts ini formatted item to sku."""
         pass
@@ -15,4 +18,13 @@ class AbstractStore:
 
     def is_in_stock(self, sku: str, data: str) -> bool:
         """Returns whether the webpage found for the sku indicates whether it is in stock."""
+        pass
+
+
+class AbstractBuyableStore(AbstractStore):
+
+    def __init__(self, config):
+        super().__init__(config)
+
+    def buy_item(self, sku):
         pass

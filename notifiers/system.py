@@ -1,11 +1,8 @@
-from gi.repository import Notify
+import desktop_notify
 from notifiers.abstract import AbstractNotifier
 
 
 class SystemNotifier(AbstractNotifier):
 
-    def notify(self, url: str):
-        Notify.init("In Stock Notifier")
-        notification = Notify.Notification.new("In Stock", url)
-        notification.set_urgency(Notify.Urgency.CRITICAL)
-        notification.show()
+    async def notify(self, url: str):
+        await desktop_notify.aio.Notify("In Stock", url).show()

@@ -1,6 +1,8 @@
 import asyncio
 from stores.interface.interface import AbstractStore
+from stores.interface.interface import AbstractBuyableStore
 import requests
+from requests.exceptions import ConnectionError
 
 
 class Monitor:
@@ -24,8 +26,7 @@ class Monitor:
                 try:
                     response = requests.get(
                         url, headers=self.store.custom_headers)
-                except:
-                    print("Encountered error for: {}".format(sku))
+                except ConnectionError:
                     continue
                 if response.status_code != 200:
                     print("unable to request data for url: {}".format(url))
@@ -34,6 +35,8 @@ class Monitor:
                 in_stock = self.store.is_in_stock(
                     sku, response.content.decode("utf-8"))
                 if in_stock:
+                    if self.store is AbstractBuyableStore:
+                        self.store.buy_item(sku)
                     for notifier in self.notifiers:
                         notifier.notify(url)
                 else:
