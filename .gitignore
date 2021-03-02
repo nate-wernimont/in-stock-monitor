@@ -1,2 +1,7 @@
 __pycache__
 .vscode
+config.ini
+chromedriver
+bin
+lib
+pyvenv.cfg
