@@ -8,12 +8,12 @@ class SMSNotifier(AbstractNotifier):
         self.sns_topic = sns_topic
         self.texted_links = {}
 
-    def notify(self, url: str):
+    async def notify(self, url: str):
         if url in self.texted_links:
             return
 
         client = boto3.client('sns')
-        response = client.publish(
+        client.publish(
             TopicArn=self.sns_topic,
             Message=url,
         )

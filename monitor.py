@@ -38,6 +38,6 @@ class Monitor:
                     if self.store is AbstractBuyableStore:
                         self.store.buy_item(sku)
                     for notifier in self.notifiers:
-                        notifier.notify(url)
+                        await notifier.notify(url)
                 else:
                     print("Out of stock: {}".format(sku))

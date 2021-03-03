@@ -1,5 +1,4 @@
 from html.parser import HTMLParser
-import requests
 from stores.interface.interface import AbstractStore
 
 

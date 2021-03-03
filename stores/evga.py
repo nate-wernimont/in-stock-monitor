@@ -1,4 +1,3 @@
-import requests
 from html.parser import HTMLParser
 from stores.interface.interface import AbstractStore
 
@@ -9,7 +8,7 @@ evgaHeaders = headers = {
 
 
 class EVGAParser(HTMLParser):
-    out_of_stock = False
+    in_stock = False
 
     def handle_starttag(self, tag, attrs):
         pass
@@ -18,12 +17,12 @@ class EVGAParser(HTMLParser):
         pass
 
     def handle_data(self, data):
-        if not self.out_of_stock and "out of stock" in data.lower():
-            self.out_of_stock = True
+        if not self.in_stock and "add to cart" in data.lower():
+            self.in_stock = True
 
     def feed(self, data):
         super().feed(data)
-        return not self.out_of_stock
+        return self.in_stock
 
 
 class EVGA(AbstractStore):
